@@ -141,8 +141,114 @@ VAR
 	'}
 	M11 : DUT_MotionStage := (fVelocity := 500.0, nEnableMode:=ENUM_StageEnableMode.ALWAYS); // GM Screwdriver Rotation
 	fbMotionStage_m11 : FB_MotionStage;
-END_VAR
-]]></Declaration>
+
+	// FLOW and RTD Sensors
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 16 (EL3054)^AI Standard Channel 1^Value'}	
+	flow_1 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 16 (EL3054)^AI Standard Channel 2^Value'}	
+	flow_2 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 16 (EL3054)^AI Standard Channel 3^Value'}		
+	pres_1 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 17 (EL3202-0010)^RTD Inputs Channel 1^Value'}		
+	rtd_01 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 17 (EL3202-0010)^RTD Inputs Channel 1^Value'}		
+	rtd_02 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 18 (EL3202-0010)^RTD Inputs Channel 2^Value'}		
+	rtd_03 AT %I*: INT;	
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 18 (EL3202-0010)^RTD Inputs Channel 1^Value'}		
+	rtd_04 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 19 (EL3204)^RTD Inputs Channel 2^Value'}		
+	rtd_05 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 19 (EL3204)^RTD Inputs Channel 1^Value'}		
+	rtd_06 AT %I*: INT;
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 20 (EL3204)^RTD Inputs Channel 2^Value'}		
+	rtd_07 AT %I*: INT;	
+	{attribute 'TcLinkTo' := 'TIID^Device 4 (EtherCAT)^GM^Term 20 (EL3204)^RTD Inputs Channel 1^Value'}		
+	rtd_08 AT %I*: INT;
+	
+	{attribute 'pytmc' := '
+		pv: GM:F:F1
+		io: o
+	'}
+	FLOW1 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:F:F2
+		io: o
+	'}
+	FLOW2 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:P:P1
+		io: o
+	'}
+	PRES1 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:T:RTD1
+		io: o
+	'}
+	RTD1 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:T:RTD2
+		io: o
+	'}
+	RTD2 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:T:RTD3
+		io: o
+	'}
+	RTD3 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:T:RTD4
+		io: o
+	'}
+	RTD4 : LREAL := 0.00;
+	
+		{attribute 'pytmc' := '
+		pv: GM:T:RTD5
+		io: o
+	'}
+	RTD5 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:T:RTD6
+		io: o
+	'}
+	RTD6 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:T:RTD7
+		io: o
+	'}
+	RTD7 : LREAL := 0.00;
+	
+	{attribute 'pytmc' := '
+		pv: GM:T:RTD8
+		io: o
+	'}
+	RTD8 : LREAL := 0.00;
+	
+	// Extra Mirror Pitch and Grating Pitch Encoders:
+	{attribute 'TcLinkTo' := '.Count:=TIIB[m_pi_up_dwn_e]^FB Inputs Channel 1^Position'}	
+	mpi_upe  AT %I*:  ST_RenishawAbsEnc := (Ref:=0);
+	{attribute 'TcLinkTo' := '.Count:=TIIB[g_pi_up_dwn_e]^FB Inputs Channel 1^Position'}
+	gpi_upe  AT %I*:  ST_RenishawAbsEnc := (Ref:=0);
+
+	{attribute 'pytmc' := '
+		pv: GM:m:pi:enc2
+		io: o
+	'}
+	mpi_upeurad : LREAL;
+	{attribute 'pytmc' := '
+		pv: GM:g:pi:enc2
+		io: o
+	'}
+	gpi_upeurad : LREAL;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// M1K2
 M1K2.fbRunHOMS(stYup:=M1,
@@ -199,7 +305,45 @@ IF NOT M5.bHardwareEnable THEN
 END_IF
 *)
 // 3-15-20: Having issues with pitch control on new Axilon systems
-fbMotionStage_m5(stMotionStage:=M5);]]></ST>
+fbMotionStage_m5(stMotionStage:=M5);
+
+// GM
+// STO Interlock
+M6.bHardwareEnable := bGMSTO1 AND bGMSTO2;
+M7.bHardwareEnable := bGMSTO1 AND bGMSTO2;
+M8.bHardwareEnable := bGMSTO1 AND bGMSTO2;
+M9.bHardwareEnable := bGMSTO1 AND bGMSTO2;
+M10.bHardwareEnable := bGMSTO1 AND bGMSTO2;
+M11.bHardwareEnable := bGMSTO1 AND bGMSTO2;
+
+// Screwdriver Rotation Has No Limits:
+M11.bLimitForwardEnable := TRUE;
+M11.bLimitBackwardEnable := TRUE;
+
+// FB_MotionStage Control
+fbMotionStage_m6(stMotionStage:=M6);
+fbMotionStage_m7(stMotionStage:=M7);
+fbMotionStage_m8(stMotionStage:=M8);
+fbMotionStage_m9(stMotionStage:=M9);
+fbMotionStage_m10(stMotionStage:=M10);
+fbMotionStage_m11(stMotionStage:=M11);
+
+// Flow and RTD Sensors
+FLOW1 := INT_TO_LREAL(flow_1)/32767*4;
+FLOW2 := INT_TO_LREAL(flow_2)/32767*4;
+PRES1 := INT_TO_LREAL(pres_1)/32767*2;
+RTD1 := INT_TO_LREAL(rtd_01)/100;
+RTD2 := INT_TO_LREAL(rtd_02)/100;
+RTD3 := INT_TO_LREAL(rtd_03)/100;
+RTD4 := INT_TO_LREAL(rtd_04)/100;
+RTD5 := INT_TO_LREAL(rtd_05)/100;
+RTD6 := INT_TO_LREAL(rtd_06)/100;
+RTD7 := INT_TO_LREAL(rtd_07)/100;
+RTD8 := INT_TO_LREAL(rtd_08)/100;
+
+// Extra Mirror Pitch and Grating Pitch Encoders:
+mpi_upeurad := ULINT_TO_LREAL(mpi_upe.Count)*0.004505;
+gpi_upeurad := ULINT_TO_LREAL(gpi_upe.Count)*0.0066667;]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
