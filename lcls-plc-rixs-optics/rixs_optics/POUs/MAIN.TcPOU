@@ -84,7 +84,63 @@ VAR
 
 	// 3-15-20 Having issues with pitch control on new Axilon systems
 	// Using stepper only for now
-	fbMotionStage_m5 : FB_MotionStage;	
+	fbMotionStage_m5 : FB_MotionStage;
+	
+	// GM
+	// Style modification of Axilon project to LCLSII Optics PLC conventions
+
+	// STO
+	{attribute 'TcLinkTo' := 'TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 5 (EK1122)^EK1100_GM^EL1004_GM_STO^Channel 1^Input'}
+	bGMSTO1 AT %I* : BOOL;
+	{attribute 'TcLinkTo' := 'TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 5 (EK1122)^EK1100_GM^EL1004_GM_STO^Channel 2^Input'}
+	bGMSTO2 AT %I* : BOOL;
+
+	// Motors
+	{attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[EL7047_GM_MRPI]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[EL7047_GM_MRPI]^STM Status^Status^Digital input 2'}
+	{attribute 'pytmc' := '
+		pv: GM:MMS:MRPI
+	'}
+	M6 : DUT_MotionStage := (fVelocity:=200.0, nEnableMode:=ENUM_StageEnableMode.ALWAYS); // GM Mirror Pitch
+	fbMotionStage_m6 : FB_MotionStage;
+
+	{attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[EL7047_GM_GRPI]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[EL7047_GM_GRPI]^STM Status^Status^Digital input 2'}
+	{attribute 'pytmc' := '
+		pv: GM:MMS:GRPI
+	'}
+	M7 : DUT_MotionStage := (fVelocity:=200.0, nEnableMode:=ENUM_StageEnableMode.ALWAYS); // GM Grating Pitch
+	fbMotionStage_m7 : FB_MotionStage;
+
+	{attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[EL7047_GM_MRX]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[EL7047_GM_MRX]^STM Status^Status^Digital input 2'}
+	{attribute 'pytmc' := '
+		pv: GM:MMS:MRX
+	'}
+	M8 : DUT_MotionStage := (fVelocity:=500.0, nEnableMode:=ENUM_StageEnableMode.ALWAYS); // GM Mirror X
+	fbMotionStage_m8 : FB_MotionStage;
+
+	{attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[EL7047_GM_GRX]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[EL7047_GM_GRX]^STM Status^Status^Digital input 2'}
+	{attribute 'pytmc' := '
+		pv: GM:MMS:GRX
+	'}
+	M9 : DUT_MotionStage := (fVelocity:=1000.0, nEnableMode:=ENUM_StageEnableMode.ALWAYS); // GM Grating X
+	fbMotionStage_m9 : FB_MotionStage;
+
+	{attribute 'TcLinkTo' := '.bLimitForwardEnable:=TIIB[EL7047_GM_SIO]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable:=TIIB[EL7047_GM_SIO]^STM Status^Status^Digital input 2'}
+	{attribute 'pytmc' := '
+		pv: GM:MMS:SIO
+	'}
+	M10 : DUT_MotionStage := (fVelocity := 500.0, nEnableMode:=ENUM_StageEnableMode.ALWAYS); // GM Screwdriver InOut
+	fbMotionStage_m10 : FB_MotionStage;
+
+	{attribute 'pytmc' := '
+		pv: GM:MMS:SR
+	'}
+	M11 : DUT_MotionStage := (fVelocity := 500.0, nEnableMode:=ENUM_StageEnableMode.ALWAYS); // GM Screwdriver Rotation
+	fbMotionStage_m11 : FB_MotionStage;
 END_VAR
 ]]></Declaration>
     <Implementation>
