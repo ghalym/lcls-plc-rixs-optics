@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="PRG_SPO" Id="{deee4afe-af7b-464e-9eb5-f1ffa2794ddb}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PRG_SPO
+VAR
+	// PMPS
+    ffMR1K1Height : FB_FastFault := (
+        i_xAutoReset := TRUE,
+        i_DevName := 'MR1K1 Height',
+        i_Desc := 'MR1K1 Height is out of Single Point Operation safe range',
+        i_TypeCode := 16#F501);	
+
+    ffMR1K1Pitch : FB_FastFault := (
+        i_xAutoReset := TRUE,
+        i_DevName := 'MR1K1 Pitch',
+        i_Desc := 'MR1K1 Pitch is out of Single Point Operation safe range',
+        i_TypeCode := 16#F502);	
+		
+    ffSP1K1MPitch : FB_FastFault := (
+        i_xAutoReset := TRUE,
+        i_DevName := 'SP1K1 Mirror Pitch',
+        i_Desc := 'SP1K1 Mirror Pitch is out of Single Point Operation safe range',
+        i_TypeCode := 16#F503);	
+
+	ffSP1K1GPitch : FB_FastFault := (
+        i_xAutoReset := TRUE,
+        i_DevName := 'SP1K1 Grating Pitch',
+        i_Desc := 'SP1K1 Grating Pitch is out of Single Point Operation safe range',
+        i_TypeCode := 16#F504);	
+
+	ffSP1K1GHorisontal : FB_FastFault := (
+        i_xAutoReset := TRUE,
+        i_DevName := 'SP1K1 Grating horizontal',
+        i_Desc := 'SP1K1 horizontal Pitch is out of Single Point Operation safe range',
+        i_TypeCode := 16#F505);		
+	
+	ffZos : FB_FastFault := (
+        i_xAutoReset := TRUE,
+        i_DevName := 'T1K1 ZOS',
+        i_Desc := 'ST1K1 ZOS is out of Single Point Operation safe range',
+        i_TypeCode := 16#F506);	
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+//MR1K1 height
+ffMR1K1Height(io_fbFFHWO := GVL_PMPS.fbFastFaultOutput1);
+
+
+//MR1K1 pitch
+ffMR1K1Pitch(io_fbFFHWO := GVL_PMPS.fbFastFaultOutput1);
+
+
+//SP1K1 mirror pitch
+ffSP1K1MPitch(io_fbFFHWO := GVL_PMPS.fbFastFaultOutput1);
+
+
+//SP1K1 grating pitch
+ffSP1K1GPitch(io_fbFFHWO := GVL_PMPS.fbFastFaultOutput1);
+
+
+//SP1K1 Grating horizontal
+ffSP1K1GHorisontal(io_fbFFHWO := GVL_PMPS.fbFastFaultOutput1);
+
+
+//ST1K1 ZOS
+ffZos(io_fbFFHWO := GVL_PMPS.fbFastFaultOutput1);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
